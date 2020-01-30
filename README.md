@@ -1,4 +1,4 @@
-## Koa-best-validator
+## koa-best-validator
 校验以下四种参数传递
 - ctx.params
 - ctx.request.query
