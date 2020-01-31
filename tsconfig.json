@@ -59,7 +59,7 @@
   },
   "include": [
     "src/**/*",
-    "test/index_old.js"
+    "bak/index_old.js"
   ],
   "exclude": [
     "node_modules",

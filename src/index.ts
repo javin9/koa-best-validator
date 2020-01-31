@@ -7,12 +7,15 @@ import { cloneDeep, get, isPlainObject } from 'lodash'
 
 class RuleResult {
   valid: boolean
+  validator: KoaBestValidator
   message: string | undefined
   invalidFields: any
-  constructor(valid: boolean, message?: string | undefined, invalidFields?: any) {
+
+  constructor(valid: boolean, validator: KoaBestValidator, message?: string | undefined, invalidFields?: any) {
     this.valid = valid
     this.message = message
     this.invalidFields = invalidFields
+    this.validator = validator
   }
 }
 
@@ -43,11 +46,11 @@ class KoaBestValidator {
           if (thowError && !valid) {
             reject(message)
           } else {
-            resolve(new RuleResult(valid, message, invalidFields))
+            resolve(new RuleResult(valid, this, message, invalidFields))
           }
         })
       } else {
-        resolve(new RuleResult(true))
+        resolve(new RuleResult(true, this))
       }
     })
   }
@@ -111,7 +114,7 @@ class KoaBestValidator {
    * @param {string} key 
    */
   getValue(key: string) {
-    return this.model[key] || ''
+    return this.model[key] || this.findParam(key).value
   }
 
   /**

@@ -8,39 +8,24 @@
 ### 校验规则
 参考[async-validator](https://www.npmjs.com/package/async-validator)
 
-### API
-#### validate
-验证
-```javascript
-function(ctx,throwError): Promise
-```
-- `ctx`:Koa的请求上下文(必须)
-- `throwError`:验证失败的时候，是否通过`throw new Error()`方式抛出错误，默认：false，非必填
-
-### findParam
-通过key获取value
-```javascript
-function(key):any
+### Usage
+测试
+```bash
+nodemon test/index.js
 ```
 
-### usae
+代码内容，也可以找到项目根目录下面的test文件
 ```javascript
-const { KoaBestValidator } = require('../src/index')
-const Koa = require('koa')
-const bodyParser = require('koa-bodyparser')
-const Router = require('koa-router')
+//./test/validator/person-validator.js
 
-const app = new Koa()
-const router = new Router()
-
-app.use(bodyParser())
-
+const { KoaBestValidator } = require('../../lib/index')
 /**
- * 获取用户信息的Validator
+ * 获取用户信息的Validator 继承KoaBestValidator
  */
 class PersonValidator extends KoaBestValidator {
   constructor() {
     super()
+    //添加校验规则，参考[async-validator](https://www.npmjs.com/package/async-validator)
     this.descriptor = {
       name: [
         { type: "string", required: true },
@@ -56,6 +41,7 @@ class PersonValidator extends KoaBestValidator {
       grade: [
         {
           validator: (rule, value, callback) => {
+            //自定义校验规则，参考[async-validator](https://www.npmjs.com/package/async-validator)
             if (value) {
               callback()
             } else {
@@ -68,7 +54,12 @@ class PersonValidator extends KoaBestValidator {
   }
 }
 
+module.exports = PersonValidator
+```
 
+```javascript
+// ./test/validator/registry-validator.js
+const { KoaBestValidator } = require('../../lib/index')
 
 /**
  * 注册验证
@@ -117,18 +108,55 @@ class RegistryValidator extends KoaBestValidator {
 }
 
 
+module.exports = RegistryValidator
+```
+```javascript
+//./test/index.js
 
+const Koa = require('koa')
+const bodyParser = require('koa-bodyparser')
+const Router = require('koa-router')
+//异常错误
+const PersonValidator = require('./validator/person-validator')
+const RegistryValidator = require('./validator/registry-validator')
+
+
+const app = new Koa()
+const router = new Router()
+
+app.use(bodyParser())
+
+/**
+ * 捕获全局异常
+ */
+app.use(async (ctx, next) => {
+  try {
+    await next()
+  } catch (error) {
+    ctx.body = {
+      message: error
+    }
+  }
+})
 
 router.get('/api/getuserinfo', async (ctx, next) => {
-  const v = await (new PersonValidator()).validate(ctx)
-  console.log(v);
+  //验证
+  const { valid, validator } = await (new PersonValidator()).validate(ctx)
+  //通过getValue方法可以拿到值
+  const name = validator.getValue('name')
+  const age = validator.getValue('age')
+  const grade = validator.getValue('grade')
   ctx.body = {
-    code: 'success'
+    code: 'success',
+    name,
+    age,
+    grade
   }
 })
 
 
 router.post('/api/registry', async (ctx, next) => {
+  //验证
   const v = await (new RegistryValidator()).validate(ctx)
   ctx.body = {
     code: 'success'
@@ -138,6 +166,52 @@ app.use(router.routes())
 app.use(router.allowedMethods())
 
 app.listen(3001)
+```
 
+### API
+#### validate
+验证
+```javascript
+function(ctx:any,throwError:boolean): Promise
+```
+- `ctx`:Koa的请求上下文(必须)
+- `throwError`:验证失败的时候，是否通过`throw new Error()`方式抛出错误，默认：false，非必填。如果为true，可以通过给Koa注册中间件，捕获异常。例如
+```javascript
+app.use(bodyParser())
+app.use(async (ctx, next) => {
+  try {
+    await next()
+  } catch (error) {
+    //捕获到异常
+    ctx.body = {
+      message: error
+    }
+  }
+})
+```
 
+#### findParam
+自定义校验规则时，通过key获取value
+```javascript
+function(key:string):any
+```
+
+#### getValue
+取值。
+```javascript
+function(key:string):any
+```
+例子：
+```javascript
+ const { valid, validator } = await (new PersonValidator()).validate(ctx)
+  //通过getValue方法可以拿到值
+  const name = validator.getValue('name')
+  const age = validator.getValue('age')
+  const grade = validator.getValue('grade')
+  ctx.body = {
+    code: 'success',
+    name,
+    age,
+    grade
+  }
 ```
