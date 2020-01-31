@@ -25,7 +25,7 @@ const { KoaBestValidator } = require('../../lib/index')
 class PersonValidator extends KoaBestValidator {
   constructor() {
     super()
-    //添加校验规则，参考[async-validator](https://www.npmjs.com/package/async-validator)
+    //添加校验规则，参考async-validator
     this.descriptor = {
       name: [
         { type: "string", required: true },
@@ -41,7 +41,7 @@ class PersonValidator extends KoaBestValidator {
       grade: [
         {
           validator: (rule, value, callback) => {
-            //自定义校验规则，参考[async-validator](https://www.npmjs.com/package/async-validator)
+            //自定义校验规则，参考async-validator
             if (value) {
               callback()
             } else {
