@@ -2,13 +2,15 @@
   "name": "koa-best-validator",
   "version": "1.0.0",
   "description": "koa-best-validator is request validator for node.js.",
-  "main": "src/index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsc ./src/index.ts",
+    "build": "rollup -c rollup.config.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/polyfill": "^7.8.3",
     "async-validator": "^3.2.3",
     "lodash": "^4.17.15"
   },
@@ -17,8 +19,20 @@
     "url": "git@github.com:rupid/koa-best-validator.git"
   },
   "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/plugin-external-helpers": "^7.8.3",
+    "@babel/preset-env": "^7.8.4",
+    "@types/lodash": "^4.14.149",
+    "babel-plugin-lodash": "^3.3.4",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",
-    "koa-router": "^8.0.6"
+    "koa-router": "^8.0.6",
+    "rollup": "^1.31.0",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript2": "^0.25.3",
+    "rollup-plugin-uglify": "^6.0.4",
+    "typescript": "^3.7.5"
   }
 }

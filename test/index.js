@@ -1,4 +1,4 @@
-const { KoaBestValidator } = require('../src/index')
+const { KoaBestValidator } = require('../lib/index')
 const Koa = require('koa')
 const bodyParser = require('koa-bodyparser')
 const Router = require('koa-router')

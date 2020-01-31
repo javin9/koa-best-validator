@@ -1,6 +1,12 @@
-const schema = require('async-validator')
-const AsyncValidator = schema.default
-const { cloneDeep, get, set, last, isPlainObject } = require('lodash')
+
+import AsyncValidator from 'async-validator'
+// const { cloneDeep, get, isPlainObject } = require('lodash')
+// import { cloneDeep, get, isPlainObject } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
+import get from 'lodash/get'
+import isPlainObject from 'lodash/isPlainObject'
+
+
 
 
 /**
@@ -19,6 +25,7 @@ class RuleResult {
 class KoaBestValidator {
   constructor() {
     this.parameters = {}
+    this.model = {}
     this.descriptor = {}
   }
 
@@ -57,6 +64,7 @@ class KoaBestValidator {
     Object.keys(descriptor).forEach((key) => {
       model[key] = this.findParam(key).value
     })
+    this.model = model
     return model
   }
 
@@ -99,6 +107,14 @@ class KoaBestValidator {
       value: null,
       path: []
     }
+  }
+
+  /**
+   * 
+   * @param {*} key 
+   */
+  getValue (key) {
+    return this.model[key] || ''
   }
 
   /**

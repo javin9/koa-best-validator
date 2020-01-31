@@ -5,10 +5,6 @@
 - ctx.request.header 
 - ctx.request.body
 
-### TODO
-- Rollup
-- 用Typescript重写
-
 ### 校验规则
 参考[async-validator](https://www.npmjs.com/package/async-validator)
 
