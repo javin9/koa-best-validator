@@ -7,6 +7,12 @@
 
 ### 校验规则
 参考[async-validator](https://www.npmjs.com/package/async-validator)
+### 安装
+```bash
+yarn add koa-best-validator 
+# 或
+npm i koa-best-validator 
+```
 
 ### Usage
 测试
