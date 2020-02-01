@@ -1,14 +1,20 @@
 {
   "name": "koa-best-validator",
-  "version": "1.0.2",
+  "version": "1.0.3-alpha.1",
   "description": "koa-best-validator is request validator for node.js.",
   "main": "lib/index.js",
   "scripts": {
     "start": "tsc ./src/index.ts",
     "build": "rollup -c rollup.config.js"
   },
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "Koa",
+    "validator",
+    "node"
+  ],
+  "author": "liujianwei1213",
+  "email": "liujianwei1213@163.com",
+  "license": "MIT",
   "peerDependencies": {
     "lodash": "^4.17.15"
   },
@@ -20,6 +26,9 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:rupid/koa-best-validator.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   },
   "bugs": {
     "url": "https://github.com/rupid/koa-best-validator/issues"
