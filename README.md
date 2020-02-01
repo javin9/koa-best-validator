@@ -5,30 +5,32 @@
 - ctx.request.header 
 - ctx.request.body
 
+### 目录
+- 校验规则
+- 安装
+- 使用
+- 属性
+- 
+
 ### 校验规则
 参考[async-validator](https://www.npmjs.com/package/async-validator)
+
 ### 安装
 ```bash
 yarn add koa-best-validator 
 # 或
 npm i koa-best-validator 
 ```
-
-### Usage
-测试
-```bash
-nodemon test/index.js
-```
-
-代码内容，也可以找到项目根目录下面的test文件
+### 使用
+具体的[demo地址]
 ```javascript
 //./test/validator/person-validator.js
 
-const { KoaBestValidator } = require('../../lib/index')
-/**
- * 获取用户信息的Validator 继承KoaBestValidator
- */
-class PersonValidator extends KoaBestValidator {
+const { Validator } = require('koa-best-validator')
+
+// 第一步：继承基类Validator
+// 第二部：参考aysnc-validator，在属性descriptor添加校验规则
+class PersonValidator extends Validator {
   constructor() {
     super()
     //添加校验规则，参考async-validator
@@ -65,12 +67,11 @@ module.exports = PersonValidator
 
 ```javascript
 // ./test/validator/registry-validator.js
-const { KoaBestValidator } = require('../../lib/index')
+const { Validator } = require('koa-best-validator')
 
-/**
- * 注册验证
- */
-class RegistryValidator extends KoaBestValidator {
+// 第一步：继承基类Validator
+// 第二部：参考aysnc-validator，在属性descriptor添加校验规则
+class RegistryValidator extends Validator {
   constructor() {
     super()
     this.descriptor = {
@@ -116,6 +117,9 @@ class RegistryValidator extends KoaBestValidator {
 
 module.exports = RegistryValidator
 ```
+
+
+路由中使用编写的Validaotr类，传入ctx
 ```javascript
 //./test/index.js
 
@@ -125,6 +129,8 @@ const Router = require('koa-router')
 //异常错误
 const PersonValidator = require('./validator/person-validator')
 const RegistryValidator = require('./validator/registry-validator')
+
+const {RuleResult}=require('koa-best-validator')
 
 
 const app = new Koa()
@@ -139,6 +145,10 @@ app.use(async (ctx, next) => {
   try {
     await next()
   } catch (error) {
+    if(error instanceof RuleResult){
+    //Koa-best-validator抛出的错误实例
+    console.log(error)
+    }
     ctx.body = {
       message: error
     }
@@ -174,21 +184,27 @@ app.use(router.allowedMethods())
 app.listen(3001)
 ```
 
-### API
+### Validator 属性
+descriptor：Object。校验规则，具体可以参考async-validator
+
+### Validator API
 #### validate
 验证
 ```javascript
 function(ctx:any,throwError:boolean): Promise
 ```
 - `ctx`:Koa的请求上下文(必须)
-- `throwError`:验证失败的时候，是否通过`throw new Error()`方式抛出错误，默认：false，非必填。如果为true，可以通过给Koa注册中间件，捕获异常。例如
+- `throwError`:验证失败的时候，是否通过`throw new Error(new RuleResult（）)`方式抛出错误，默认：false，非必填。如果为true，可以通过给Koa注册中间件，捕获异常。例如
 ```javascript
-app.use(bodyParser())
+const { RuleResult } = require('koa-best-validator')
 app.use(async (ctx, next) => {
   try {
     await next()
   } catch (error) {
-    //捕获到异常
+    if (error instanceof RuleResult) {
+      //Koa-best-validator抛出的错误实例
+      console.log(error)
+    }
     ctx.body = {
       message: error
     }
@@ -220,4 +236,9 @@ function(key:string):any
     age,
     grade
   }
+```
+### 演示
+具体的[demo地址](https://github.com/rupid/koa-best-validator/tree/master/test)
+```bash
+nodemon test/index.js
 ```

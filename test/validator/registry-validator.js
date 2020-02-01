@@ -1,9 +1,9 @@
-const { KoaBestValidator } = require('../../lib/index')
+const { Validator } = require('../../lib/index')
 
 /**
  * 注册验证
  */
-class RegistryValidator extends KoaBestValidator {
+class RegistryValidator extends Validator {
   constructor() {
     super()
     this.descriptor = {

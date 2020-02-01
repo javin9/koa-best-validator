@@ -5,6 +5,7 @@ const Router = require('koa-router')
 //异常错误
 const PersonValidator = require('./validator/person-validator')
 const RegistryValidator = require('./validator/registry-validator')
+const { RuleResult } = require('../lib/index')
 
 
 const app = new Koa()
@@ -19,6 +20,10 @@ app.use(async (ctx, next) => {
   try {
     await next()
   } catch (error) {
+    if (error instanceof RuleResult) {
+      //Koa-best-validator抛出的错误实例
+      console.log(error)
+    }
     ctx.body = {
       message: error
     }

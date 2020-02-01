@@ -1,9 +1,9 @@
 
-const { KoaBestValidator } = require('../../lib/index')
+const { Validator } = require('../../lib/index')
 /**
  * 获取用户信息的Validator
  */
-class PersonValidator extends KoaBestValidator {
+class PersonValidator extends Validator {
   constructor() {
     super()
     this.descriptor = {
