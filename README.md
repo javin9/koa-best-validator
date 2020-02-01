@@ -22,7 +22,10 @@ yarn add koa-best-validator
 npm i koa-best-validator 
 ```
 ### 使用
-具体的[demo地址]
+- 继承基类Validator
+- 参考aysnc-validator，在属性descriptor添加校验规则
+- 验证 `await (new RegistryValidator()).validate(ctx)`
+
 ```javascript
 //./test/validator/person-validator.js
 
