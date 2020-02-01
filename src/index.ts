@@ -19,7 +19,7 @@ class RuleResult {
   }
 }
 
-class KoaBestValidator {
+class Validator {
   parameters!: any
   model!: any
   descriptor!: any
@@ -43,10 +43,11 @@ class KoaBestValidator {
         validator.validate(model, { first: true, firstFields: true }, (errors: any, invalidFields: any) => {
           let valid = !errors
           let message = errors ? errors[0].message : '';
+          let result = new RuleResult(valid, this, message, invalidFields)
           if (thowError && !valid) {
-            reject(message)
+            reject(result)
           } else {
-            resolve(new RuleResult(valid, this, message, invalidFields))
+            resolve(result)
           }
         })
       } else {
@@ -132,5 +133,6 @@ class KoaBestValidator {
 }
 
 module.exports = {
-  KoaBestValidator
+  Validator,
+  RuleResult
 }
