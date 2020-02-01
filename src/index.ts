@@ -7,11 +7,11 @@ import { cloneDeep, get, isPlainObject } from 'lodash'
 
 class RuleResult {
   valid: boolean
-  validator: KoaBestValidator
+  validator: Validator
   message: string | undefined
   invalidFields: any
 
-  constructor(valid: boolean, validator: KoaBestValidator, message?: string | undefined, invalidFields?: any) {
+  constructor(valid: boolean, validator: Validator, message?: string | undefined, invalidFields?: any) {
     this.valid = valid
     this.message = message
     this.invalidFields = invalidFields
