@@ -10,7 +10,7 @@
 - 安装
 - 使用
 - 属性
-- 
+- API
 
 ### 校验规则
 参考[async-validator](https://www.npmjs.com/package/async-validator)
