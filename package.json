@@ -1,6 +1,6 @@
 {
   "name": "koa-best-validator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "koa-best-validator is request validator for node.js.",
   "main": "lib/index.js",
   "scripts": {
