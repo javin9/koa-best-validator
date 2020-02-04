@@ -13,7 +13,7 @@ class PersonValidator extends Validator {
       ],
       age: [
         {
-          required: true, type: 'number', message: 'is error', validator: (rule, value) => {
+          required: true, type: 'string', message: 'is error', validator: (rule, value) => {
             return value > 10
           }
         }

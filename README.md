@@ -1,19 +1,9 @@
 ## koa-best-validator
-校验以下四种参数传递
-- ctx.params
-- ctx.request.query
-- ctx.request.header 
-- ctx.request.body
-
-### 目录
-- 校验规则
-- 安装
-- 使用
-- 属性
-- API
-
-### 校验规则
-参考[async-validator](https://www.npmjs.com/package/async-validator)
+对于参数的校验，`koa-best-validator`提供了类校验方式，对以下四纵参数进行统一校验
+- ctx.params(路由参数)
+- ctx.request.query(上下文请求query参数)
+- ctx.request.header(上下文请求头)
+- ctx.request.body(上下文请求体)
 
 ### 安装
 ```bash
@@ -67,59 +57,11 @@ class PersonValidator extends Validator {
 
 module.exports = PersonValidator
 ```
-
-```javascript
-// ./test/validator/registry-validator.js
-const { Validator } = require('koa-best-validator')
-
-// 第一步：继承基类Validator
-// 第二部：参考aysnc-validator，在属性descriptor添加校验规则
-class RegistryValidator extends Validator {
-  constructor() {
-    super()
-    this.descriptor = {
-      username: [
-        {
-          type: "string",
-          required: true
-        }
-      ],
-      passwd1: [
-        {
-          //自定义验证规则
-          validator: (rule, value, cb) => {
-            if (!value) {
-              cb(new Error('请输入密码'))
-            } else {
-              cb()
-            }
-          }
-        }
-      ],
-      passwd2: [
-        {
-          validator: (rule, value, cb) => {
-            if (!value) {
-              cb(new Error('请再次输入密码'))
-            } else {
-              //获取某一个字段
-              const passwd1 = this.findParam('passwd1').value
-              if (value !== passwd1) {
-                cb(new Error('两次输入密码不一致!'));
-              } else {
-                cb();
-              }
-            }
-          }
-        }
-      ]
-    }
-  }
-}
-
-
-module.exports = RegistryValidator
-```
+我们以`PersonValidator`r为例来详细的分析类校验器的使用
+- `koa-best-validator`会返回 `Validator`,`RuleResult` 两个类。
+- `Validator` 校验器的基类。
+- `RuleResult` 校验结果的基类。
+- 必须继承自`Validator`这个基类，且需要在构造函数中初始化校验规则。如我们在 `PersonValidator` 的构造函数中定义了`name`,`age`,`grade` 等校验规则,必须是`数组`。参考[async-validator](https://www.npmjs.com/package/async-validator)
 
 
 路由中使用编写的Validaotr类，传入ctx
@@ -222,7 +164,7 @@ function(key:string):any
 ```
 
 #### getValue
-取值。
+获取参数值，`key`可以是path路径，比如`params.name` ，也可以是参数名`name`。如果校验规则中定义了type类型，取值会自动转换。例如age的规则中，type：`number`。会自动转成 int类型。如果对应过个type类型，以第一个为准，目前支持的类型换换有 `string`,`number`,`float`,`boolean`
 ```javascript
 function(key:string):any
 ```
@@ -245,3 +187,62 @@ function(key:string):any
 ```bash
 nodemon test/index.js
 ```
+
+### 自定义规则函数
+
+```javascript
+// ./test/validator/registry-validator.js
+const { Validator } = require('koa-best-validator')
+
+// 第一步：继承基类Validator
+// 第二部：参考aysnc-validator，在属性descriptor添加校验规则
+class RegistryValidator extends Validator {
+  constructor() {
+    super()
+    this.descriptor = {
+      username: [
+        {
+          type: "string",
+          required: true
+        }
+      ],
+      passwd1: [
+        {
+          //自定义验证规则
+          validator: (rule, value, cb) => {
+            if (!value) {
+              cb(new Error('请输入密码'))
+            } else {
+              cb()
+            }
+          }
+        }
+      ],
+      passwd2: [
+        {
+          validator: (rule, value, cb) => {
+            if (!value) {
+              cb(new Error('请再次输入密码'))
+            } else {
+              //获取某一个字段
+              const passwd1 = this.findParam('passwd1').value
+              if (value !== passwd1) {
+                cb(new Error('两次输入密码不一致!'));
+              } else {
+                cb();
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+module.exports = RegistryValidator
+```
+
+### FAQ 
+文档写的不清出的地方，欢迎加群详聊
+

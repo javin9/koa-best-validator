@@ -7,13 +7,14 @@ class RegistryValidator extends Validator {
   constructor() {
     super()
     this.descriptor = {
-      username: [
-        {
-          type: "string",
-          required: true
-        }
-      ],
+      // username: [
+      //   {
+      //     type: "string",
+      //     required: true
+      //   }
+      // ],
       passwd1: [
+        { type: 'number', required: true, message: '密码必须是数字' },
         {
           //自定义验证规则
           validator: (rule, value, cb) => {
@@ -26,6 +27,7 @@ class RegistryValidator extends Validator {
         }
       ],
       passwd2: [
+        { type: 'number', required: true, message: '密码必须是数字' },
         {
           validator: (rule, value, cb) => {
             if (!value) {

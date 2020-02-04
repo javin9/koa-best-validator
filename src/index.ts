@@ -1,6 +1,6 @@
 
 import AsyncValidator from 'async-validator'
-import { cloneDeep, get, isPlainObject } from 'lodash'
+import { cloneDeep, get, isPlainObject, last } from 'lodash'
 // import cloneDeep from 'lodash/cloneDeep'
 // import get from 'lodash/get'
 // import isPlainObject from 'lodash/isPlainObject'
@@ -20,7 +20,11 @@ class RuleResult {
 }
 
 class Validator {
+  //默认参数
   parameters!: any
+  //根据类型格式化后的参数
+  pasrsedParameters!: any
+
   model!: any
   descriptor!: any
 
@@ -33,6 +37,7 @@ class Validator {
     const descriptor = this.descriptor
     const parameters = this._assembleAllParams(ctx)
     this.parameters = cloneDeep(parameters)
+    this.pasrsedParameters = cloneDeep(parameters)
 
     return new Promise((resolve, reject) => {
       if (descriptor && isPlainObject(descriptor) && Object.keys(descriptor).length > 0) {
@@ -63,10 +68,51 @@ class Validator {
   _getModel(descriptor: any) {
     let model: any = {}
     Object.keys(descriptor).forEach((key) => {
-      model[key] = this.findParam(key).value
+      const rules = descriptor[key]
+      if (!Array.isArray(rules)) {
+        throw new Error('验证规则必须为数组')
+      }
+      let value: any = this.findParam(key).value
+      for (const rule of rules) {
+        if (Object.prototype.hasOwnProperty.call(rule, 'type')) {
+          value = this._convert(rule.type, value)
+          break;
+        }
+      }
+      model[key] = value
     })
     this.model = model
     return model
+  }
+
+  /**
+   * 类型转换
+   * @param value 
+   */
+  _convert(type: string, value: string, ) {
+    if (!value) {
+      return value
+    }
+
+    let result: any = ''
+    switch (type) {
+      case 'number':
+        result = parseInt(value)
+        break;
+      case 'string':
+        result = String(value)
+        break;
+      case 'float':
+        result = parseFloat(value)
+        break;
+      case 'boolean':
+        result = !!value
+        break;
+      default:
+        result = value
+        break;
+    }
+    return result
   }
 
   /**
@@ -114,8 +160,16 @@ class Validator {
    * 根据key获取参数值
    * @param {string} key 
    */
-  getValue(key: string) {
-    return this.model[key] || this.findParam(key).value
+  getValue(path: string | undefined) {
+    if (!path) {
+      return ''
+    }
+    //根据路径找，如果根据路径找不到，在根据key找
+    const value = get(this.parameters, path, null)
+    if (value == null && !path.includes('.')) {
+      return this.model[path] || this.findParam(path).value
+    }
+    return value
   }
 
   /**

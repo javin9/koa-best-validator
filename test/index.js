@@ -32,13 +32,13 @@ app.use(async (ctx, next) => {
 
 router.get('/api/getuserinfo', async (ctx, next) => {
   //验证
-  const { valid, validator } = await (new PersonValidator()).validate(ctx)
+  const { valid, validator, message } = await (new PersonValidator()).validate(ctx)
   //通过getValue方法可以拿到值
   const name = validator.getValue('name')
   const age = validator.getValue('age')
   const grade = validator.getValue('grade')
   ctx.body = {
-    code: 'success',
+    code: message,
     name,
     age,
     grade
@@ -48,9 +48,13 @@ router.get('/api/getuserinfo', async (ctx, next) => {
 
 router.post('/api/registry', async (ctx, next) => {
   //验证
-  const v = await (new RegistryValidator()).validate(ctx)
+  const { valid, validator } = await (new RegistryValidator()).validate(ctx)
+  const passwd1 = validator.getValue('passwd1')
+  const passwd2 = validator.getValue('passwd2')
   ctx.body = {
-    code: 'success'
+    code: valid,
+    passwd1,
+    passwd2
   }
 })
 app.use(router.routes())
