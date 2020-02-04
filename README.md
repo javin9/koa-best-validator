@@ -243,6 +243,3 @@ class RegistryValidator extends Validator {
 module.exports = RegistryValidator
 ```
 
-### FAQ 
-文档写的不清出的地方，欢迎加群详聊
-
