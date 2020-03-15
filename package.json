@@ -7,6 +7,7 @@
     "start": "tsc ./src/index.ts",
     "build": "rollup -c rollup.config.js"
   },
+  "typings": "./lib/index.d.ts",
   "keywords": [
     "Koa",
     "validator",

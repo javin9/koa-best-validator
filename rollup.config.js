@@ -14,7 +14,15 @@ export default {
   plugins: [
     typescript(),
     uglify(),
-    commonjs(),
+    commonjs({
+      namedExports: {
+        'node_modules/lodash/lodash.js': [
+          'cloneDeep',
+          'isPlainObject',
+          'get'
+        ]
+      }
+    }),
     resolve({
       jsnext: true,
       main: true,
@@ -29,5 +37,5 @@ export default {
     })
   ],
   // 指出应将哪些模块视为外部模块
-  external: ['lodash']
+  external: ['axios']
 };

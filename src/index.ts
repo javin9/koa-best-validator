@@ -1,9 +1,6 @@
 
 import AsyncValidator from 'async-validator'
-import { cloneDeep, get, isPlainObject, last } from 'lodash'
-// import cloneDeep from 'lodash/cloneDeep'
-// import get from 'lodash/get'
-// import isPlainObject from 'lodash/isPlainObject'
+import { cloneDeep, get, isPlainObject } from 'lodash'
 
 class RuleResult {
   valid: boolean
