@@ -57,7 +57,7 @@ class PersonValidator extends Validator {
 
 module.exports = PersonValidator
 ```
-我们以`PersonValidator`r为例来详细的分析类校验器的使用
+我们以`PersonValidator`为例来详细的分析类校验器的使用
 - `koa-best-validator`会返回 `Validator`,`RuleResult` 两个类。
 - `Validator` 校验器的基类。
 - `RuleResult` 校验结果的基类。
